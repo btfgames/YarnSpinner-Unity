@@ -1285,11 +1285,25 @@ namespace Yarn.Unity.Editor
                     unityEntry = unityStringTable.AddEntry(lineID, stringInfo.text);
                 }
 
+                // [OH APOLLO] edited original speaker meta data
+
                 // Next, set up the metadata on this entry. We'll start by
                 // getting the list of hashtags on the line, not including its
                 // line ID (we don't need it in metadata, because it's already
                 // stored as the table entry's key.)
-                var tags = RemoveLineIDFromMetadata(stringInfo.metadata).ToArray();
+                var tagList = RemoveLineIDFromMetadata(stringInfo.metadata).ToList();
+
+                if (stringInfo.text != null && stringInfo.text.Contains(':'))
+                {
+                    string speaker = stringInfo.text[..stringInfo.text.IndexOf(':')].Trim().ToLower();
+                    if (!string.IsNullOrEmpty(speaker))
+                    {
+                        tagList.Add($"speaker:{speaker}");
+                    }
+                }
+
+                var tags = tagList.ToArray();
+                // [OH APOLLO]/END edited original speaker meta data
 
                 // Next, do we already have metadata for the Unity table entry?
                 var existingSharedMetadata = unityEntry.SharedEntry.Metadata.GetMetadata<UnityLocalization.LineMetadata>();
@@ -1321,7 +1335,7 @@ namespace Yarn.Unity.Editor
                 }
 
                 HashSet<string> invalidKeys = new();
-                unityStringTable.SharedData.Entries.Sort((a,b) =>
+                unityStringTable.SharedData.Entries.Sort((a, b) =>
                 {
                     // if we encounter a key that doesn't match a value we got from the string table we want to log this and push it to one end
                     if (sortKeys.TryGetValue(unityStringTable.GetEntry(a.Id).Key, out var aKey))
