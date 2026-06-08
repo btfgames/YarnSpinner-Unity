@@ -171,6 +171,11 @@ namespace Yarn.Unity.UnityLocalization
             lineParser.DeregisterMarkerProcessor(attributeName);
         }
 
+        public void SetStringsTable(string tableName)
+        {
+            stringsTable = new LocalizedStringTable { TableReference = tableName };
+        }
+
         /// <inheritdoc/>
         public override YarnTask PrepareForLinesAsync(IEnumerable<string> lineIDs, CancellationToken cancellationToken)
         {
