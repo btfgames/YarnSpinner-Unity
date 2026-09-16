@@ -277,6 +277,10 @@ namespace Yarn.Unity.ActionAnalyser
                 relativePath = SourceFileName;
             }
 
+            // Use consistent path separators regardless of the OS that we're
+            // generating this file on
+            relativePath = relativePath?.Replace('\\', '/');
+
             result["yarnName"] = this.Name;
             result["definitionName"] = this.MethodName;
             result["fileName"] = relativePath;
